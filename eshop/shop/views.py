@@ -16,6 +16,8 @@ def home(request):
 
 @login_required
 def profile(request):
+    Profile.objects.get_or_create(user=request.user)
+    
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
@@ -30,7 +32,6 @@ def profile(request):
         profile_form = UpdateProfileForm(instance=request.user.profile)
 
     return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
-
 
 class RegisterView(View):
     form_class = RegisterForm

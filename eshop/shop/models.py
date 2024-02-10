@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField()
 

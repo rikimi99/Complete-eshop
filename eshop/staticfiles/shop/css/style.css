@@ -231,3 +231,17 @@ footer.footer {
 .carousel-control-next {
   right: 10px;
 }
+
+.logout-btn-wrapper {
+  all: unset; /* Remove button default styling */
+  cursor: pointer; /* Make it look clickable */
+}
+
+.logout-btn-wrapper:hover {
+  text-decoration: underline; /* Add underline on hover to indicate it's a link */
+}
+
+/* Optional: Adjust the icon and text alignment if necessary */
+.logout-icon {
+  margin-right: 5px; /* Space between icon and text */
+}
