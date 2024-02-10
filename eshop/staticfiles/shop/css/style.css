@@ -1,0 +1,233 @@
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+#logo-container {
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  animation: rotateLogo 3s linear infinite;
+}
+
+@keyframes rotateLogo {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.wrapper {
+  flex-grow: 1;
+}
+
+footer.footer {
+  flex-shrink: 0;
+}
+
+.featured-products .card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.about-us {
+  background-color: #f8f9fa;
+}
+
+.contact form {
+  max-width: 500px;
+  margin: auto;
+}
+
+.card-img-top {
+  height: 200px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.price-button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.jumbotron {
+  background-color: #007bff;
+  color: white;
+}
+
+.featured-products {
+  padding: 5rem 0;
+}
+
+.about-us {
+  background-color: #f8f9fa;
+  padding: 5rem 0;
+}
+
+.contact {
+  padding: 5rem 0;
+}
+
+.cart-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.cart-item-card {
+  margin-bottom: 1rem;
+}
+
+.cart-item-image {
+  width: 65px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.cart-summary-card {
+  border-radius: 8px;
+  color: #fff;
+}
+
+.cart-summary-btn {
+  background-color: #007bff;
+  border: none;
+}
+
+.cart-summary-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Adding a little bit of animation to the cart item removal */
+.cart-item-remove-link {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.cart-item-remove-link:hover {
+  color: #f44336; /* Red color for hover */
+}
+
+@media (max-width: 768px) {
+  .cart-item-details {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .cart-item-details-right {
+    margin-top: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .cart-summary-card {
+    margin-top: 2rem;
+  }
+}
+
+.cart-item-quantity,
+.cart-item-subtotal,
+.cart-item-remove-link {
+  margin-right: 16px; /* Adjust the space as needed */
+}
+
+/* Specific adjustments for responsive design */
+@media (max-width: 768px) {
+  .cart-item-quantity,
+  .cart-item-subtotal,
+  .cart-item-remove-link {
+    margin-right: 8px; /* Less space on smaller screens */
+  }
+}
+/* Fix for last-child spacing */
+.d-flex > .align-items-center > :last-child {
+  margin-right: 0 !important; /* Ensuring the last child has no right margin */
+}
+
+.wishlist-icon {
+  position: absolute;
+  top: -350px;
+  right: -300px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.wishlist-icon svg {
+  fill: rgb(185, 185, 185);
+  width: 20px;
+  height: 20px;
+}
+
+.wishlist-icon:hover svg {
+  fill: rgb(51, 51, 51);
+}
+
+.carousel-container {
+  margin: auto;
+  max-width: 75%;
+}
+.carousel-item {
+  height: 300px;
+}
+.carousel-item img {
+  max-height: 300px;
+  width: auto;
+  max-width: 100%;
+  display: block;
+  margin: auto;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  font-size: 30px;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 30px;
+  height: 30px;
+}
+.carousel-control-prev,
+.carousel-control-next span {
+  font-size: 18px;
+  color: white;
+}
+.carousel-control-prev {
+  left: 10px;
+}
+.carousel-control-next {
+  right: 10px;
+}
