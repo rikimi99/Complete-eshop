@@ -47,7 +47,11 @@
         "
       >
         <div id="logo-container">
-          <img src="#" alt="eShop" style="max-width: 100%; max-height: 100%" />
+          <img
+            src="{% static 'shop/images/logo.png' %}"
+            alt="eShop"
+            style="max-width: 100%; max-height: 100%"
+          />
         </div>
       </a>
       <button
@@ -79,7 +83,9 @@
               Products
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">Hookahs</a>
+              <a class="dropdown-item" href="{% url 'product_list' %}"
+                >Hookahs</a
+              >
               <a class="dropdown-item" href="#">Option 2</a>
               <a class="dropdown-item" href="#">Option 3</a>
             </div>
@@ -107,7 +113,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'cart_count' %}">
+            <a class="nav-link" href="{% url 'cart' %}">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
