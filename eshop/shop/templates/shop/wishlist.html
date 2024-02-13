@@ -1,0 +1,11 @@
+{% extends "base.html" %} {% block content %}
+<h2>My Wishlist</h2>
+{% if wishlist_items %}
+<ul>
+  {% for item in wishlist_items %}
+  <li>{{ item.product.name }} - {{ item.product.price }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Your wishlist is empty.</p>
+{% endif %} {% endblock %}

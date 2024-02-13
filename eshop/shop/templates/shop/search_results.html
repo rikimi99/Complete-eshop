@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container py-5">
+  <h2>Search Results</h2>
+  <form id="sortForm" class="mb-4">
+    <label for="sort">Sort by:</label>
+    <select name="sort" id="sort">
+      <option value="name">Name</option>
+      <option value="price">Price</option>
+    </select>
+  </form>
+  <div class="row" id="productList">
+    {% for product in products %}
+    <div
+      class="col-md-4 mb-4 product-item"
+      data-name="{{ product.name }}"
+      data-price="{{ product.price }}"
+    >
+      <div class="card h-100">
+        {% if product.image %}
+        <img
+          src="{{ product.image.url }}"
+          class="card-img-top"
+          alt="{{ product.name }}"
+        />
+        {% else %}
+        <img src="{% static 'images/default_product_image.png' %}" />
+        class="card-img-top" alt="Default image" /> {% endif %}
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.description }}</p>
+          <div class="mt-auto">
+            <span class="price">${{ product.price }}</span>
+            <form action="{% url 'add_to_cart' product.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-sm">
+                Add to Cart
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="mx-auto">No products found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
