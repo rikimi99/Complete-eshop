@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordChangeView
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import ListView
 from django.db.models.functions import Lower
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, CheckoutForm
 from .models import *
-
+from django.contrib.messages.views import SuccessMessageMixin
 
 # View for the home page
 def home(request):
@@ -98,6 +98,22 @@ class CustomLogoutView(LogoutView):
         # Redirect to a specific page after logout
         self.next_page = reverse('where_to_redirect_after_logout') 
         return self.post(request, *args, **kwargs)
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'users/password_reset.html'
+    email_template_name = 'users/password_reset_email.html'
+    subject_template_name = 'users/password_reset_subject.txt'  # Make sure this file extension is correct (it should be .txt, not mentioned in your snippet)
+    success_message = "We've emailed you instructions for setting your password, " \
+                      "if an account exists with the email you entered. You should receive them shortly." \
+                      " If you don't receive an email, " \
+                      "please make sure you've entered the address you registered with, and check your spam folder."
+    success_url = reverse_lazy('users-home')
+
+
+class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    template_name = 'users/change_password.html'
+    success_message = "Successfully Changed Your Password"
+    success_url = reverse_lazy('users-home')
 
 
 # View for listing products
