@@ -1,19 +1,27 @@
 {% extends "base.html" %} {% block content %}
+<!-- Main container for the sign-in form -->
 <div class="form-content my-3 p-3">
   <div class="container">
+    <!-- Row to center the sign-in card -->
     <div class="row justify-content-center">
+      <!-- Column specifying the width of the sign-in card -->
       <div class="col-lg-5">
+        <!-- Card containing the sign-in form -->
         <div class="card shadow-lg border-0 rounded-lg mt-0 mb-3">
+          <!-- Card header with the sign-in title -->
           <div class="card-header justify-content-center">
             <h3 class="font-weight-light my-1 text-center">Sign In</h3>
           </div>
+          <!-- Conditional display of errors if the form submission failed -->
           {% if form.errors %}
           <div class="alert alert-danger alert-dismissible" role="alert">
             <div id="form_errors">
+              <!-- Loop through each error and display it -->
               {% for key, value in form.errors.items %}
               <strong>{{ value }}</strong>
               {% endfor %}
             </div>
+            <!-- Button to dismiss the alert -->
             <button
               type="button"
               class="close"
@@ -24,25 +32,21 @@
             </button>
           </div>
           {% endif %}
+          <!-- Card body containing the actual form -->
           <div class="card-body">
+            <!-- Form with POST method for secure data submission -->
             <form method="POST">
-              {% csrf_token %}
+              {% csrf_token %} <!-- CSRF token for security -->
               <div class="form-row">
                 <div class="col-md-10 offset-md-1">
                   <div class="form-group">
-                    <a
-                      href="{% url 'social:begin' 'github' %}"
-                      class="btn btn-link btn-lg active btn-block"
-                      >Sign in with GitHub</a
-                    >
-                    <a
-                      href="{% url 'social:begin' 'google-oauth2' %}"
-                      class="btn btn-link btn-lg active btn-block"
-                      >Sign in with Google</a
-                    >
+                    <!-- Social authentication options -->
+                    <a href="{% url 'social:begin' 'github' %}" class="btn btn-link btn-lg active btn-block">Sign in with GitHub</a>
+                    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-link btn-lg active btn-block">Sign in with Google</a>
                     <hr />
                     <p class="text-center"><strong>OR</strong></p>
                     <hr />
+                    <!-- Username input field -->
                     <label class="small mb-1">Username</label>
                     {{ form.username }}
                   </div>
@@ -51,6 +55,7 @@
               <div class="form-row">
                 <div class="col-md-10 offset-md-1">
                   <div class="form-group">
+                    <!-- Password input field -->
                     <label class="small mb-1">Password</label>
                     {{ form.password }}
                   </div>
@@ -59,7 +64,7 @@
               <div class="form-row">
                 <div class="col-md-10 offset-md-1">
                   <div class="form-group">
-                    <!-- Add a Remember me functionality -->
+                    <!-- Remember me checkbox -->
                     {{ form.remember_me }}
                     <label> Remember me</label>
                   </div>
@@ -68,23 +73,17 @@
               <div class="form-row">
                 <div class="col-md-10 offset-md-1">
                   <div class="form-group mt-0 mb-1">
-                    <button
-                      name="login"
-                      class="col-md-12 btn btn-dark"
-                      id="login"
-                    >
-                      Sign in
-                    </button>
+                    <!-- Submit button for the form -->
+                    <button name="login" class="col-md-12 btn btn-dark" id="login">Sign in</button>
                   </div>
                 </div>
               </div>
             </form>
           </div>
+          <!-- Footer with links to registration and password recovery -->
           <div class="card-footer text-center">
             <div class="small">
-              <a href="{% url 'register' %}"
-                >Don't have an account yet? Go to signup</a
-              ><br />
+              <a href="{% url 'register' %}">Don't have an account yet? Go to signup</a><br />
               <a href="#"><i>Forgot Password?</i></a>
             </div>
           </div>

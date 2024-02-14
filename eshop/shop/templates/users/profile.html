@@ -1,44 +1,59 @@
 {% extends "base.html" %} {% block content %}
+<!-- Row for displaying the user's avatar -->
 <div class="row my-3 p-3">
+  <!-- User avatar image with styling -->
   <img
     class="rounded-circle account-img"
     src="{{ user.profile.avatar.url }}"
     style="cursor: pointer"
   />
 </div>
+
+<!-- Display errors if there are any in the user form -->
 {% if user_form.errors %}
 <div class="alert alert-danger alert-dismissible" role="alert">
   <div id="form_errors">
+    <!-- Iterate through each error and display it -->
     {% for key, value in user_form.errors.items %}
     <strong>{{ value }}</strong>
     {% endfor %}
   </div>
+  <!-- Button to close the alert box -->
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 {% endif %}
+
+<!-- Container for the user profile form -->
 <div class="form-content">
+  <!-- Form with method post and enctype for file upload -->
   <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+    {% csrf_token %} <!-- CSRF token for form security -->
     <div class="form-row">
       <div class="col-md-5">
         <div class="form-group">
+          <!-- Username field -->
           <label class="small mb-1">Username:</label>
           {{ user_form.username }}
+          <!-- Email field -->
           <label class="small mb-1">Email:</label>
           {{ user_form.email }}
         </div>
         <div class="form-group">
+          <!-- Link to change the password -->
           <a href="#">Change Password</a>
           <hr />
+          <!-- Avatar change field -->
           <label class="small mb-1">Change Avatar:</label>
           {{ profile_form.avatar }}
         </div>
+        <!-- Bio text area -->
         <label class="small mb-1">Bio:</label> {{ profile_form.bio }}
       </div>
     </div>
     <br /><br />
+    <!-- Buttons to submit or reset the form -->
     <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
     <button type="reset" class="btn btn-dark btn-lg">Reset</button>
   </form>
