@@ -118,21 +118,25 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, '/static'),]
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = '/'
+
 
 # social auth configs for github
 SOCIAL_AUTH_GITHUB_KEY = str(os.getenv('GITHUB_KEY'))
 SOCIAL_AUTH_GITHUB_SECRET = str(os.getenv('GITHUB_SECRET'))
 
+
 # social auth configs for google
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = str(os.getenv('GOOGLE_KEY'))
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = str(os.getenv('GOOGLE_SECRET'))
+
 
 # email configs
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -150,3 +154,4 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
