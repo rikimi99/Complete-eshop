@@ -1,5 +1,8 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 <style>
+  /* Styling for the body padding, form controls, error messages, and adjustable textarea */
   body {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -22,32 +25,35 @@
     resize: vertical; /* Allows the user to resize vertically */
   }
 </style>
+
 <div class="container mt-5">
   <div class="row">
+    <!-- Column for the billing address form -->
     <div class="col-md-8 order-md-1">
       <h4 class="mb-3">Billing address</h4>
-      <form
-        id="checkout-form"
-        method="post"
-        action="{% url 'complete_order' %}"
-      >
+      <form id="checkout-form" method="post" action="{% url 'complete_order' %}">
         {% csrf_token %}
+        <!-- Dynamic form fields for billing information -->
         <div class="row">
           <div class="col-md-6 mb-3">
             {{ form.name.label_tag }} {{ form.name }}
+            <!-- Container for name error -->
             <div id="name-error" class="form-error"></div>
           </div>
           <div class="col-md-6 mb-3">
             {{ form.email.label_tag }} {{ form.email }}
+            <!-- Container for email error -->
             <div id="email-error" class="form-error"></div>
           </div>
         </div>
+        <!-- Address field -->
         <div class="mb-3">
           {{ form.address.label_tag }} {{ form.address }}
           <div id="address-error" class="form-error"></div>
         </div>
         <hr class="mb-4" />
         <h4 class="mb-3">Payment</h4>
+        <!-- Dynamic form fields for payment information -->
         <div class="row">
           <div class="col-md-6 mb-3">
             {{ form.card_name.label_tag }} {{ form.card_name }}
@@ -68,32 +74,24 @@
             <div id="card-cvc-error" class="form-error"></div>
           </div>
         </div>
-        <button
-          id="submit-btn"
-          class="btn btn-primary btn-lg btn-block"
-          type="submit"
-        >
+        <!-- Submit button -->
+        <button id="submit-btn" class="btn btn-primary btn-lg btn-block" type="submit">
           Complete Order
         </button>
       </form>
     </div>
+    <!-- Column for the cart summary -->
     <div class="col-md-4 order-md-2 mb-4">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
         <span class="text-muted">Your cart</span>
-        <span class="badge badge-secondary badge-pill"
-          >{{ cart_items|length }}</span
-        >
+        <span class="badge badge-secondary badge-pill">{{ cart_items|length }}</span>
       </h4>
+      <!-- List group for cart items -->
       <ul class="list-group mb-3">
         {% for item in cart_items %}
         <li class="list-group-item d-flex justify-content-between lh-condensed">
           <div>
-            <img
-              src="{{ item.product.image.url }}"
-              alt="{{ item.product.name }}"
-              class="img-thumbnail"
-              style="width: 50px; height: 50px"
-            />
+            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail" style="width: 50px; height: 50px" />
             <div>
               <h6 class="my-0">{{ item.product.name }}</h6>
               <small class="text-muted">{{ item.product.description }}</small>
@@ -103,6 +101,7 @@
           <span class="text-muted">$ {{ item.subtotal }}</span>
         </li>
         {% endfor %}
+        <!-- Shipping and total price -->
         <li class="list-group-item d-flex justify-content-between bg-light">
           <div class="text-success">
             <h6 class="my-0">Shipping</h6>

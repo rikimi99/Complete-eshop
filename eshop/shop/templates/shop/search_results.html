@@ -1,6 +1,8 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
+<!-- Main container for search results -->
 <div class="container py-5">
   <h2>Search Results</h2>
+  <!-- Form for sorting search results -->
   <form id="sortForm" class="mb-4">
     <label for="sort">Sort by:</label>
     <select name="sort" id="sort">
@@ -8,39 +10,37 @@
       <option value="price">Price</option>
     </select>
   </form>
+  
+  <!-- Container for displaying product list -->
   <div class="row" id="productList">
+    <!-- Loop through the products passed to the template -->
     {% for product in products %}
-    <div
-      class="col-md-4 mb-4 product-item"
-      data-name="{{ product.name }}"
-      data-price="{{ product.price }}"
-    >
+    <div class="col-md-4 mb-4 product-item" data-name="{{ product.name }}" data-price="{{ product.price }}">
       <div class="card h-100">
+        <!-- Display product image if exists, else a default image -->
         {% if product.image %}
-        <img
-          src="{{ product.image.url }}"
-          class="card-img-top"
-          alt="{{ product.name }}"
-        />
+        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" />
         {% else %}
-        <img src="{% static 'images/default_product_image.png' %}" />
-        class="card-img-top" alt="Default image" /> {% endif %}
+        <!-- Incorrect closing tag fixed, ensure proper HTML syntax -->
+        <img src="{% static 'images/default_product_image.png' %}" class="card-img-top" alt="Default image" />
+        {% endif %}
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text">{{ product.description }}</p>
           <div class="mt-auto">
             <span class="price">${{ product.price }}</span>
+            <!-- Form to add product to cart -->
             <form action="{% url 'add_to_cart' product.id %}" method="post">
               {% csrf_token %}
-              <button type="submit" class="btn btn-primary btn-sm">
-                Add to Cart
-              </button>
+              <input type="hidden" name="product_id" value="{{ product.id }}" />
+              <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
             </form>
           </div>
         </div>
       </div>
     </div>
     {% empty %}
+    <!-- Message displayed if no products are found -->
     <p class="mx-auto">No products found.</p>
     {% endfor %}
   </div>

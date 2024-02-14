@@ -1,85 +1,67 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Section for the shopping cart, styled with a background color -->
 <section class="cart-section h-100" style="background-color: #eee">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-12">
+        <!-- Main card for the cart items and summary -->
         <div class="cart-card">
           <div class="cart-card-body p-4">
+            <!-- Row for cart items and recommended products -->
             <div class="row">
+              <!-- Column for the cart items -->
               <div class="col-lg-7">
+                <!-- Link to continue shopping -->
                 <h5 class="cart-page-title mb-4">
                   <a href="{% url 'product_list' %}" class="text-body">
-                    <i class="fas fa-long-arrow-alt-left me-2"></i>Continue
-                    shopping
+                    <i class="fas fa-long-arrow-alt-left me-2"></i>Continue shopping
                   </a>
                 </h5>
+                <!-- Iterating over cart items -->
+                {% for item in cart_items %}
                 <div class="cart-item-card mb-3">
                   <div class="cart-item-card-body">
-                    {% for item in cart_items %}
-                    <div
-                      class="cart-item-details d-flex justify-content-between align-items-center"
-                    >
+                    <div class="cart-item-details d-flex justify-content-between align-items-center">
+                      <!-- Product image and details -->
                       <div class="d-flex flex-row align-items-center">
-                        <img
-                          src="{{ item.product.image.url }}"
-                          class="cart-item-image me-3"
-                          alt="{{ item.product.name }}"
-                        />
+                        <img src="{{ item.product.image.url }}" class="cart-item-image me-3" alt="{{ item.product.name }}" />
                         <div>
-                          <h5 class="cart-item-name">
-                            {{ item.product.name }}
-                          </h5>
-                          <p
-                            class="cart-item-description small text-muted mb-0"
-                          >
-                            {{ item.product.description }}
-                          </p>
+                          <h5 class="cart-item-name">{{ item.product.name }}</h5>
+                          <p class="cart-item-description small text-muted mb-0">{{ item.product.description }}</p>
                         </div>
                       </div>
+                      <!-- Quantity, subtotal, and remove link -->
                       <div class="d-flex flex-row align-items-center">
-                        <p class="cart-item-quantity me-3">
-                          {{ item.quantity }}
-                        </p>
-                        <p class="cart-item-subtotal me-3">
-                          ${{ item.subtotal }}
-                        </p>
-                        <a
-                          href="#!"
-                          class="cart-item-remove-link text-danger"
-                          onclick="removeItemFromCart('{{ item.product.id }}')"
-                        >
+                        <p class="cart-item-quantity me-3">{{ item.quantity }}</p>
+                        <p class="cart-item-subtotal me-3">${{ item.subtotal }}</p>
+                        <a href="#!" class="cart-item-remove-link text-danger" onclick="removeItemFromCart('{{ item.product.id }}')">
                           <i class="fas fa-trash-alt"></i>
                         </a>
                       </div>
                     </div>
-                    {% if not forloop.last %}
-                    <hr />
-                    {% endif %} {% endfor %}
+                    <!-- Divider between items -->
+                    {% if not forloop.last %}<hr />{% endif %}
                   </div>
                 </div>
+                {% endfor %}
+                <!-- Section for recommended products -->
                 <div class="recommended-products-section">
                   <h5 class="mb-4">You might also like</h5>
                   <div class="row">
+                    <!-- Iterating over recommended products -->
                     {% for product in recommended_products %}
                     <div class="col-md-4 mb-4">
                       <div class="card h-100">
-                        <img
-                          src="{{ product.image.url }}"
-                          class="card-img-top"
-                          alt="{{ product.name }}"
-                        />
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" />
                         <div class="card-body">
                           <h5 class="card-title">{{ product.name }}</h5>
                           <p class="card-text">{{ product.description }}</p>
-                          <div
-                            class="d-flex justify-content-between align-items-center"
-                          >
+                          <!-- Price and add to cart button -->
+                          <div class="d-flex justify-content-between align-items-center">
                             <span class="price">${{ product.price }}</span>
-                            <a
-                              href="{% url 'add_to_cart' product.id %}"
-                              class="btn btn-primary"
-                              >Add to Cart</a
-                            >
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
                           </div>
                         </div>
                       </div>
@@ -88,26 +70,19 @@
                   </div>
                 </div>
               </div>
+              <!-- Column for the cart summary -->
               <div class="col-lg-5">
-                <div
-                  class="cart-summary-card bg-primary text-white rounded-3 p-4"
-                >
+                <div class="cart-summary-card bg-primary text-white rounded-3 p-4">
                   <h5 class="cart-summary-title mb-4">Cart details</h5>
+                  <!-- Payment icons -->
                   <div class="mb-4">
-                    <a href="#!" class="text-white me-2"
-                      ><i class="fab fa-cc-mastercard fa-2x"></i
-                    ></a>
-                    <a href="#!" class="text-white me-2"
-                      ><i class="fab fa-cc-visa fa-2x"></i
-                    ></a>
-                    <a href="#!" class="text-white me-2"
-                      ><i class="fab fa-cc-amex fa-2x"></i
-                    ></a>
-                    <a href="#!" class="text-white"
-                      ><i class="fab fa-cc-paypal fa-2x"></i
-                    ></a>
+                    <a href="#!" class="text-white me-2"><i class="fab fa-cc-mastercard fa-2x"></i></a>
+                    <a href="#!" class="text-white me-2"><i class="fab fa-cc-visa fa-2x"></i></a>
+                    <a href="#!" class="text-white me-2"><i class="fab fa-cc-amex fa-2x"></i></a>
+                    <a href="#!" class="text-white"><i class="fab fa-cc-paypal fa-2x"></i></a>
                   </div>
                   <hr class="my-4" />
+                  <!-- Summary of costs -->
                   <div class="d-flex justify-content-between">
                     <span>Subtotal</span>
                     <span id="subtotal">$0.00</span>
@@ -120,12 +95,8 @@
                     <span>Total (Incl. taxes)</span>
                     <span id="totalWithTaxes">$0.00</span>
                   </div>
-                  <a
-                    href="{% url 'checkout' %}"
-                    class="btn btn-info btn-block btn-lg"
-                    onclick="checkoutHandler(event)"
-                    >Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i
-                  ></a>
+                  <!-- Checkout button -->
+                  <a href="{% url 'checkout' %}" class="btn btn-info btn-block btn-lg" onclick="checkoutHandler(event)">Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></a>
                 </div>
               </div>
             </div>
@@ -135,8 +106,11 @@
     </div>
   </div>
 </section>
+
+<!-- JavaScript functions for checkout handling and cart updates -->
 <script>
   function checkoutHandler(event) {
+    // Prevent checkout if the cart is empty
     if (document.querySelectorAll(".cart-item-details").length === 0) {
       event.preventDefault();
       alert("Your cart is empty. Please add items to proceed to checkout.");
@@ -144,43 +118,37 @@
   }
 
   function updateCartTotals() {
+    // Calculate and update cart totals
     var subtotal = 0;
-    document
-      .querySelectorAll(".cart-item-subtotal")
-      .forEach(function (itemSubtotalElement) {
-        var itemSubtotal = parseFloat(
-          itemSubtotalElement.textContent.replace("$", "")
-        );
-        subtotal += itemSubtotal;
-      });
+    document.querySelectorAll(".cart-item-subtotal").forEach(function(itemSubtotalElement) {
+      var itemSubtotal = parseFloat(itemSubtotalElement.textContent.replace("$", ""));
+      subtotal += itemSubtotal;
+    });
     var shippingCost = 20.0;
     var totalWithTaxes = subtotal + shippingCost;
     document.getElementById("subtotal").textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById(
-      "totalWithTaxes"
-    ).textContent = `$${totalWithTaxes.toFixed(2)}`;
+    document.getElementById("totalWithTaxes").textContent = `$${totalWithTaxes.toFixed(2)}`;
   }
 
   function removeItemFromCart(productId) {
+    // Remove an item from the cart using AJAX
     fetch(`/remove_from_cart/${productId}/`, {
       method: "POST",
       headers: {
         "X-CSRFToken": "{{ csrf_token }}",
       },
     })
-      .then((response) => {
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          console.error(
-            "Failed to remove item from cart:",
-            response.statusText
-          );
-        }
-      })
-      .catch((error) => console.error("Error removing item from cart:", error));
+    .then((response) => {
+      if (response.ok) {
+        window.location.reload(); // Reload the page to update the cart
+      } else {
+        console.error("Failed to remove item from cart:", response.statusText);
+      }
+    })
+    .catch((error) => console.error("Error removing item from cart:", error));
   }
 
+  // Update cart totals when the page is fully loaded
   document.addEventListener("DOMContentLoaded", updateCartTotals);
 </script>
 {% endblock %}
