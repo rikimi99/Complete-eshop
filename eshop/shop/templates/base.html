@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -80,7 +79,9 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <!-- View All Products -->
-              <a href="{% url 'product_list' %}">View All Products</a>
+              <a href="{% url 'product_list' %}" class="dropdown-item">
+                <i class="fas fa-list"></i> View All Products
+              </a>
               <div class="dropdown-divider"></div>
               <!-- Categories and Subcategories -->
               {% for category in categories %}
@@ -359,6 +360,5 @@
         });
       });
     </script>
-    
   </body>
 </html>
