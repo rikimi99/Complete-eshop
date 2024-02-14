@@ -129,4 +129,3 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days.
 
 # Default primary key field type for models:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
