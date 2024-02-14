@@ -1,55 +1,65 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.conf import settings
 from django.views import View
 from django.contrib import messages
-from django.contrib.auth import logout
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, CheckoutForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect, JsonResponse
-from .models import *
 from django.views.generic import ListView
 from django.db.models.functions import Lower
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, CheckoutForm
+from .models import *
 
 
+# View for the home page
 def home(request):
     return render(request, 'shop/home.html')
 
+
+# View for the user profile
 @login_required
 def profile(request):
+    # Create or get the user's profile
     Profile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
+        # If the request method is POST, process the update profile form
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
 
         if user_form.is_valid() and profile_form.is_valid():
+            # If both forms are valid, save them and show success message
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile is updated successfully')
             return redirect(to='profile')
     else:
+        # If the request method is GET, show the profile update forms
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
 
     return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
+
+# Class-based view for user registration
 class RegisterView(View):
     form_class = RegisterForm
     initial = {'key': 'value'}
     template_name = 'users/register.html'
 
     def dispatch(self, request, *args, **kwargs):
+        # Redirect if user is already authenticated
         if request.user.is_authenticated:
             return redirect(to='/')
         return super(RegisterView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        # Render registration form
         form = self.form_class(initial=self.initial)
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
+        # Process registration form submission
         form = self.form_class(request.POST)
 
         if form.is_valid():
@@ -58,10 +68,12 @@ class RegisterView(View):
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}')
 
-            return redirect(to='#')
+            return redirect(to='login')
 
         return render(request, self.template_name, {'form': form})
-    
+
+
+# Custom LoginView with remember me functionality
 class CustomLoginView(LoginView):
     form_class = LoginForm
 
@@ -69,25 +81,26 @@ class CustomLoginView(LoginView):
         remember_me = form.cleaned_data.get('remember_me')
 
         if not remember_me:
-            # set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
+            # Set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
             self.request.session.set_expiry(0)
 
             # Set session as modified to force data updates/cookie to be saved.
             self.request.session.modified = True
 
-        # else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE" defined in settings.py
         return super(CustomLoginView, self).form_valid(form)
-    
+
+
+# Custom LogoutView with success message and redirection
 class CustomLogoutView(LogoutView):
     def get(self, request, *args, **kwargs):
         messages.success(request, "You have been logged out successfully.")
         
+        # Redirect to a specific page after logout
         self.next_page = reverse('where_to_redirect_after_logout') 
         return self.post(request, *args, **kwargs)
 
 
-########################################################################################################################
-
+# View for listing products
 def product_list(request):
     sort_by = request.GET.get('sort', 'name')
     products = Product.objects.all()
@@ -95,38 +108,74 @@ def product_list(request):
         products = products.order_by('price')
     else:
         products = products.order_by(Lower('name'))
-    return render(request, 'shop/product_list.html', {'products': products})
+    
+    categories = Category.objects.prefetch_related('subcategories').all()
 
+    return render(request, 'shop/product_list.html', {
+        'products': products,
+        'categories': categories
+    })
+
+
+# Class-based view for listing products
 class ProductListView(ListView):
     model = Product
-    template_name = 'shop/product-list.html'  # Update with your actual template path
+    template_name = 'shop/product_list.html'
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.all()
+        sort_by = self.request.GET.get('sort', 'name')
+        if sort_by == 'price':
+            return Product.objects.all().order_by('price')
+        else:
+            return Product.objects.all().order_by(Lower('name'))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.prefetch_related('subcategories').all()
+        return context
+
+
+# Class-based view for listing products by category
 class ProductsByCategoryView(ListView):
     model = Product
-    template_name = 'shop/product-list.html'  # Same template can be used
+    template_name = 'shop/product_list.html'
     context_object_name = 'products'
 
     def get_queryset(self):
-        category_id = self.kwargs['category_id']
+        category_id = self.kwargs.get('category_id')
         return Product.objects.filter(category_id=category_id)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.prefetch_related('subcategories').all()
+        return context
+
+
+# Class-based view for listing products by subcategory
 class ProductsBySubcategoryView(ListView):
     model = Product
-    template_name = 'shop/product-list.html'  # Same template can be used
+    template_name = 'shop/product-list.html'
     context_object_name = 'products'
 
     def get_queryset(self):
-        subcategory_id = self.kwargs['subcategory_id']
+        subcategory_id = self.kwargs.get('subcategory_id')
         return Product.objects.filter(subcategory_id=subcategory_id)
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.prefetch_related('subcategories').all()
+        return context
+
+
+# View for getting products in JSON format
 def get_products_json(request):
     products = Product.objects.all().values('id', 'name', 'price', 'description', 'image')
-    products_list = list(products)  # Convert QuerySet to list
+    products_list = list(products)
     return JsonResponse(products_list, safe=False)
+
+
+# View for managing shopping cart
 def cart(request):
     cart = request.session.get('cart', {})
     cart_items = []
@@ -148,6 +197,8 @@ def cart(request):
         'recommended_products': recommended_products
     })
 
+
+# View for adding a product to the cart
 def add_to_cart(request, product_id):
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
@@ -164,6 +215,8 @@ def add_to_cart(request, product_id):
     referer_url = request.META.get('HTTP_REFERER', reverse('home'))
     return HttpResponseRedirect(referer_url)
 
+
+# View for removing a product from the cart
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
@@ -175,15 +228,21 @@ def remove_from_cart(request, product_id):
     request.session['cart'] = cart
     return HttpResponseRedirect(reverse('cart'))
 
+
+# View for getting the count of items in the cart
 def cart_count(request):
     cart = request.session.get('cart', {})
     cart_count = sum(cart.get(key, {}).get('quantity', 0) for key in cart.keys())
     return JsonResponse({'cart_count': cart_count})
 
+
+# View for clearing the cart
 def clear_cart(request):
     request.session['cart'] = {}
     return redirect('cart')
 
+
+# View for the checkout process
 def checkout(request):
     shipping_cost = 20
     cart = request.session.get('cart', {})
@@ -211,20 +270,28 @@ def checkout(request):
     }
     return render(request, 'shop/checkout.html', context)
 
+
+# View for showing order success page
 def order_success(request):
     return render(request, 'shop/order_success.html')
 
+
+# View for completing the order
 def complete_order(request):
     if request.session.get('cart'):
         del request.session['cart']
 
     return redirect('order_success')
 
+
+# View for searching products
 def search_results(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(name__icontains=query)
     return render(request, 'shop/search_results.html', {'products': products})
 
+
+# View for product autocomplete API
 def product_autocomplete(request):
     if 'term' in request.GET:
         term = request.GET['term']
@@ -233,12 +300,16 @@ def product_autocomplete(request):
         return JsonResponse(data, safe=False)
     return JsonResponse([], safe=False)
 
+
+# View for getting similar products
 def get_similar_products(product_id):
     product = get_object_or_404(Product, id=product_id)
     category = product.category
     similar_products = Product.objects.filter(category=category).exclude(id=product_id)[:5]
     return similar_products
 
+
+# View for submitting a rating for a product
 def submit_rating(request, product_id):
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=product_id)
@@ -249,6 +320,8 @@ def submit_rating(request, product_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
+
+# View for getting ratings and comments for a product
 def get_ratings_comments(request, product_id):
     if request.method == 'GET':
         product = get_object_or_404(Product, pk=product_id)
@@ -260,6 +333,8 @@ def get_ratings_comments(request, product_id):
         return JsonResponse(data, safe=False)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
+# View for updating a rating for a product
 def update_rating(request, product_id):
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=product_id)
@@ -272,9 +347,13 @@ def update_rating(request, product_id):
         return JsonResponse({'success': True, 'created': created})
     return JsonResponse({'success': False})
 
+
+# View for the contact us page
 def contact(request):
     return render(request, 'shop/contactus.html')
 
+
+# View for the wishlist page
 def wishlist_view(request):
     if request.user.is_authenticated:
         # Fetch wishlist items for the logged-in user
@@ -285,6 +364,8 @@ def wishlist_view(request):
         context = {'wishlist_items': []}  # Adjust as necessary
     return render(request, 'shop/wishlist.html', context)
 
+
+# View for getting the count of items in the wishlist
 def wishlist_count_view(request):
     if request.user.is_authenticated:
         count = WishlistItem.objects.filter(user=request.user).count()
