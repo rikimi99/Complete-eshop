@@ -136,6 +136,7 @@ footer.footer {
   color: #f44336; /* Red color for hover */
 }
 
+
 @media (max-width: 768px) {
   .cart-item-details {
     flex-direction: column;
@@ -191,6 +192,14 @@ footer.footer {
   fill: rgb(51, 51, 51);
 }
 
+
+.carousel-item img {
+  width: 100%; /* Ensure the width of the image is always 100% of the carousel-item */
+  max-height: 500px; /* Max height for images to maintain the carousel size */
+  object-fit: cover; /* Cover ensures the image covers the container, might crop */
+  margin: auto; /* Center the image within the carousel-item */
+}
+
 .carousel-container {
   margin: auto;
   max-width: 75%;
@@ -244,4 +253,14 @@ footer.footer {
 /* Optional: Adjust the icon and text alignment if necessary */
 .logout-icon {
   margin-right: 5px; /* Space between icon and text */
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
 }

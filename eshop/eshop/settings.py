@@ -55,6 +55,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'shop.context_processors.categories_context',
+
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
@@ -94,11 +95,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = {
-    'social_core.backends.github.GithubOAuth2'
-    'social_core.backends.google.GoogleOAuth2'
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-}
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -117,7 +118,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, '/static'),]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
