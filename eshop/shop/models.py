@@ -52,6 +52,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def average_rating(self):
+        ratings = self.ratings.all()
+        if ratings:
+            return sum(rating.stars for rating in ratings) / ratings.count()
+        return 0
 
 
 class Order(models.Model):
@@ -64,17 +70,13 @@ class Order(models.Model):
         return f'Order by {self.name}'
 
 class Rating(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField()
-    comment = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    stars = models.IntegerField()
 
     class Meta:
-        unique_together = ('user', 'product')
-
-    def __str__(self):
-        return f'{self.rating} by {self.user.username} for {self.product.name}'
+        unique_together = (('user', 'product'),)
+        index_together = (('user', 'product'),)
 
 class WishlistItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')

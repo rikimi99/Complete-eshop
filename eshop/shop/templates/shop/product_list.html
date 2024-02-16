@@ -1,4 +1,11 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .star.filled {
+    color: gold;
+}
+</style>
 <!-- Main container for the products section -->
 <div class="container py-5">
   <h2>Our Products</h2>
@@ -31,6 +38,12 @@
           <p class="card-text">{{ product.description }}</p>
           <div class="mt-auto">
             <span class="price">${{ product.price }}</span>
+            <!-- Star rating -->
+            <div class="rating">
+              {% for star in stars_range %}
+                <span class="star">☆</span>
+              {% endfor %}
+            </div>
             <!-- Add to Cart form -->
             <form action="{% url 'add_to_cart' product.id %}" method="post">
               {% csrf_token %}
@@ -44,72 +57,44 @@
     {% endfor %}
   </div>
 </div>
-
+<script src="{% static 'js/csrf.js' %}"></script> <!-- Assuming you have a CSRF handling JS -->
 <script>
-  // Add event listener to sort select element
-  document.getElementById("sort").addEventListener("change", function () {
-    sortProducts();
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById("sort").addEventListener("change", sortProducts);
+    fetchAndDisplayProducts();
+    
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        const rating = this.getAttribute('data-value');
+        const productId = this.closest('.rating').getAttribute('data-product-id');
+        
+        fetch(`/rate_product/${productId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({ stars: rating })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if(data.success) {
+            console.log('Rating success:', data);
+            updateStarDisplay(this.closest('.rating'), rating);
+          } else {
+            console.error('Rating error:', data.error);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
   });
 
-  // Function to fetch and display products based on sort order
-  function fetchAndDisplayProducts() {
-    // AJAX call to server to fetch product data
-    fetch("/api/products/")
-      .then((response) => response.json())
-      .then((data) => {
-        const productList = document.getElementById("productList");
-        productList.innerHTML = ""; // Clear current product list
-        // Loop through fetched products and add to DOM
-        data.forEach((product) => {
-          const productElement = createProductElement(product);
-          productList.appendChild(productElement);
-        });
-      })
-      .catch((error) => console.error("Error fetching products:", error));
-  }
-
-  // Function to create a product element
-  function createProductElement(product) {
-    // Construct product DOM element
-    const colDiv = document.createElement("div");
-    colDiv.className = "col-md-4 mb-4 product-item";
-    // Set product attributes for sorting
-    colDiv.setAttribute("data-id", product.id);
-    colDiv.setAttribute("data-name", product.name);
-    colDiv.setAttribute("data-price", product.price);
-    // Populate product details
-    colDiv.innerHTML = `
-    <div class="card h-100">
-      <img src="${product.image}" class="card-img-top" alt="${product.name}">
-      <div class="card-body">
-        <h5 class="card-title">${product.name}</h5>
-        <p class="card-text">${product.description}</p>
-        <span class="price">$${product.price}</span>
-        <!-- Add to Cart Form omitted for brevity -->
-      </div>
-    </div>
-  `;
-    return colDiv;
-  }
-
-  // Function to sort products based on selected sort order
-  function sortProducts() {
-    let productList = document.getElementById("productList");
-    let products = Array.from(productList.getElementsByClassName("product-item"));
-    let sortValue = document.getElementById("sort").value;
-
-    // Sort products based on name or price
-    products.sort(function (a, b) {
-      if (sortValue === "name") {
-        return a.getAttribute("data-name").localeCompare(b.getAttribute("data-name"));
-      } else if (sortValue === "price") {
-        return parseFloat(a.getAttribute("data-price")) - parseFloat(b.getAttribute("data-price"));
-      }
-    });
-
-    // Re-append sorted products to the container
-    products.forEach((product) => {
-      productList.appendChild(product);
+  function updateStarDisplay(ratingElement, rating) {
+    const stars = ratingElement.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+      star.textContent = index < rating ? '★' : '☆';
     });
   }
 </script>

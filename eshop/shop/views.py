@@ -129,7 +129,8 @@ def product_list(request):
 
     return render(request, 'shop/product_list.html', {
         'products': products,
-        'categories': categories
+        'categories': categories,
+        'stars_range': range(1, 6)  # Add this line
     })
 
 
@@ -147,8 +148,9 @@ class ProductListView(ListView):
             return Product.objects.all().order_by(Lower('name'))
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ProductListView, self).get_context_data(**kwargs)  # Ensure compatibility with Python 2 and 3
         context['categories'] = Category.objects.prefetch_related('subcategories').all()
+        context['stars_range'] = range(1, 6)  # Add this line to include stars_range in the context
         return context
 
 
@@ -326,43 +328,27 @@ def get_similar_products(product_id):
 
 
 # View for submitting a rating for a product
-def submit_rating(request, product_id):
+def rate_product(request, product_id):
     if request.method == 'POST':
-        product = get_object_or_404(Product, pk=product_id)
-        rating = request.POST.get('rating')
-        comment = request.POST.get('comment')
+        stars = request.POST.get('stars', 0)
+        try:
+            stars = int(stars)
+        except ValueError:
+            return JsonResponse({'error': 'Invalid rating value'}, status=400)
 
-        Rating.objects.create(product=product, user=request.user, rating=rating, comment=comment)
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
+        if stars < 1 or stars > 5:
+            return JsonResponse({'error': 'Rating must be between 1 and 5'}, status=400)
 
-
-# View for getting ratings and comments for a product
-def get_ratings_comments(request, product_id):
-    if request.method == 'GET':
-        product = get_object_or_404(Product, pk=product_id)
-        ratings_comments = Rating.objects.filter(product=product).order_by('-created_at')
-        data = [{'user': rc.user.username if rc.user else 'Anonymous',
-                 'rating': rc.rating,
-                 'comment': rc.comment,
-                 'created_at': rc.created_at.strftime('%Y-%m-%d %H:%M:%S')} for rc in ratings_comments]
-        return JsonResponse(data, safe=False)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-# View for updating a rating for a product
-def update_rating(request, product_id):
-    if request.method == 'POST':
-        product = get_object_or_404(Product, pk=product_id)
-        rating_value = request.POST.get('rating')
-        comment = request.POST.get('comment')
+        product = get_object_or_404(Product, id=product_id)
         rating, created = Rating.objects.update_or_create(
-            product=product, user=request.user,
-            defaults={'rating': rating_value, 'comment': comment}
+            product=product,
+            user=request.user,
+            defaults={'stars': stars}
         )
-        return JsonResponse({'success': True, 'created': created})
-    return JsonResponse({'success': False})
 
+        return JsonResponse({'success': 'Rating updated', 'rating': stars, 'created': created})
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # View for the contact us page
 def contact(request):
