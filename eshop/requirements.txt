@@ -1,5 +1,6 @@
 asgiref==3.7.2
-bootstrap==v5.3.2
+django-bootstrap4==24.1
+django-bootstrap5==23.4
 certifi==2024.2.2
 cffi==1.16.0
 charset-normalizer==3.3.2

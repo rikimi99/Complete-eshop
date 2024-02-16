@@ -136,7 +136,6 @@ footer.footer {
   color: #f44336; /* Red color for hover */
 }
 
-
 @media (max-width: 768px) {
   .cart-item-details {
     flex-direction: column;
@@ -169,6 +168,7 @@ footer.footer {
     margin-right: 8px; /* Less space on smaller screens */
   }
 }
+
 /* Fix for last-child spacing */
 .d-flex > .align-items-center > :last-child {
   margin-right: 0 !important; /* Ensuring the last child has no right margin */
@@ -192,7 +192,6 @@ footer.footer {
   fill: rgb(51, 51, 51);
 }
 
-
 .carousel-item img {
   width: 100%; /* Ensure the width of the image is always 100% of the carousel-item */
   max-height: 500px; /* Max height for images to maintain the carousel size */
@@ -204,9 +203,11 @@ footer.footer {
   margin: auto;
   max-width: 75%;
 }
+
 .carousel-item {
   height: 300px;
 }
+
 .carousel-item img {
   max-height: 300px;
   width: auto;
@@ -214,6 +215,7 @@ footer.footer {
   display: block;
   margin: auto;
 }
+
 .carousel-control-prev,
 .carousel-control-next {
   font-size: 30px;
@@ -224,19 +226,23 @@ footer.footer {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   width: 30px;
   height: 30px;
 }
+
 .carousel-control-prev,
 .carousel-control-next span {
   font-size: 18px;
   color: white;
 }
+
 .carousel-control-prev {
   left: 10px;
 }
+
 .carousel-control-next {
   right: 10px;
 }
