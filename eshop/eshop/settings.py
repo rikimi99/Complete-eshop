@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',  # Messaging framework.
     'django.contrib.staticfiles',  # Framework for managing static files.
     'shop',  # Custom app for the shop functionality.
-    'social_django',  # Django extension for social authentication.
+    'social_django',
+    'django_extensions',    # Django extension for social authentication.
 ]
 
 # MIDDLEWARE is a list of middleware to use during request/response processing.
