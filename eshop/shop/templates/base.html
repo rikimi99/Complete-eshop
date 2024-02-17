@@ -20,6 +20,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8F6F2PCwKu9LlFxAuvlNRlVoH241tRuJsDpZGh" crossorigin="anonymous"></script>
 </head>
 <body>
+  
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <a class="navbar-brand" href="#" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
@@ -38,28 +39,30 @@
             </li>
             <!-- Products Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Products
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <!-- View All Products -->
-                    <a href="{% url 'product_list' %}" class="dropdown-item">
-                        <i class="fas fa-list"></i> View All Products
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <!-- Categories and Subcategories -->
-                    {% for category in categories %}
-                    <div class="dropdown-submenu">
-                        <a class="dropdown-item dropdown-toggle" href="#">{{ category.name }}</a>
-                        <ul class="dropdown-menu">
-                            {% for subcategory in category.subcategories.all %}
-                            <li><a class="dropdown-item" href="{% url 'products_by_subcategory' subcategory.id %}">{{ subcategory.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endfor %}
-                </div>
-            </li>
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Products
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <!-- View All Products -->
+                  <a href="{% url 'product_list' %}" class="dropdown-item">
+                      <i class="fas fa-list"></i> View All Products
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <!-- Categories and Subcategories -->
+                  {% for category in categories %}
+                  <div class="dropdown-submenu">
+                      <a class="dropdown-item dropdown-toggle" href="#">
+                          {{ category.name }}
+                      </a>
+                      <ul class="dropdown-menu">
+                          {% for subcategory in category.subcategories.all %}
+                          <li><a class="dropdown-item" href="{% url 'products_by_subcategory' subcategory.id %}">{{ subcategory.name }}</a></li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+                  {% endfor %}
+              </div>
+          </li>
             <!-- Contact -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'contactus' %}">Contact</a>
@@ -68,7 +71,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                     </svg>
                     <span class="badge badge-pill badge-primary" id="wishlist-badge">{{ wishlist_count }}</span>
                 </a>
@@ -82,11 +85,6 @@
                     <span class="badge badge-pill badge-primary" id="cart-badge">{{ cart_count }}</span>
                 </a>
             </li>
-            <!-- Product Search -->
-            <form class="form-inline my-2 my-lg-0" action="#" method="GET">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search products" aria-label="Search" name="query">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
         </ul>
         <!-- User Authentication -->
         <ul class="navbar-nav">
@@ -178,106 +176,120 @@
     </div>
 </footer>
 <script>
-      $(document).ready(function () {
-        // Function to update cart count
-        function updateCartCount() {
-          $.ajax({
+$(document).ready(function() {
+    // Function to update cart count
+    function updateCartCount() {
+        $.ajax({
             url: "{% url 'cart_count' %}",
             dataType: "json",
-            success: function (data) {
-              $("#cart-badge").text(data.cart_count);
+            success: function(data) {
+                $("#cart-badge").text(data.cart_count);
             },
-          });
-        }
-        updateCartCount();
-    
-        // Function to update wishlist count
-        function updateWishlistCount() {
-          $.ajax({
+        });
+    }
+    updateCartCount();
+
+    // Function to update wishlist count
+    function updateWishlistCount() {
+        $.ajax({
             url: "{% url 'wishlist' %}",
             dataType: "json",
-            success: function (data) {
-              $("#wishlist-badge").text(data.wishlist_count);
+            success: function(data) {
+                $("#wishlist-badge").text(data.wishlist_count);
             },
-          });
-        }
-        updateWishlistCount();
-    
-        // Product search autocomplete
-        $("input[name='query']").on("input", function () {
-          var query = $(this).val();
-          if (query.length > 0) {
-            $.getJSON("{% url 'product-autocomplete' %}", { term: query }, function (data) {
-              var dropdownContent = "";
-              if (data.length > 0) {
-                $.each(data, function (index, product) {
-                  dropdownContent += '<div class="card" style="width: 18rem;">';
-                  dropdownContent += '<img src="' + product.image_url + '" class="card-img-top" alt="' + product.name + '">';
-                  dropdownContent += '<div class="card-body">';
-                  dropdownContent += '<h5 class="card-title">' + product.name + "</h5>";
-                  dropdownContent += '<p class="card-text">$' + product.price + "</p>";
-                  dropdownContent += "</div></div>";
-                });
-                $(".autocomplete-dropdown").html(dropdownContent).show();
-              } else {
-                $(".autocomplete-dropdown").hide();
-              }
-            });
-          } else {
-            $(".autocomplete-dropdown").hide();
-          }
         });
-    
-        // Clicking outside of dropdown will hide all submenus and autocomplete dropdown
-        $(document).ready(function() {
-          // Show the nested dropdown menu on hover or click
-          $('.dropdown-submenu a.dropdown-toggle').on('click', function(e) {
+    }
+    updateWishlistCount();
+
+    // Product search autocomplete
+    $("input[name='query']").on("input", function() {
+        var query = $(this).val();
+        if (query.length > 0) {
+            $.getJSON("{% url 'product-autocomplete' %}", {
+                term: query
+            }, function(data) {
+                var dropdownContent = "";
+                if (data.length > 0) {
+                    $.each(data, function(index, product) {
+                        dropdownContent += '<div class="card" style="width: 18rem;">';
+                        dropdownContent += '<img src="' + product.image_url + '" class="card-img-top" alt="' + product.name + '">';
+                        dropdownContent += '<div class="card-body">';
+                        dropdownContent += '<h5 class="card-title">' + product.name + "</h5>";
+                        dropdownContent += '<p class="card-text">$' + product.price + "</p>";
+                        dropdownContent += "</div></div>";
+                    });
+                    $(".autocomplete-dropdown").html(dropdownContent).show();
+                } else {
+                    $(".autocomplete-dropdown").hide();
+                }
+            });
+        } else {
+            $(".autocomplete-dropdown").hide();
+        }
+    });
+
+    // Clicking outside of dropdown will hide all submenus and autocomplete dropdown
+    $(document).ready(function() {
+        // Show the nested dropdown menu on hover or click
+        $('.dropdown-submenu a.dropdown-toggle').on('click', function(e) {
             // Prevent default action and stop propagation to higher-level menu items
             e.preventDefault();
             e.stopPropagation();
-            
+
             // Close sibling submenus to mimic accordion behavior
             $(this).closest('.dropdown-menu').find('.dropdown-submenu .dropdown-menu').hide();
-            
+
             // Toggle the current submenu
             $(this).next('.dropdown-menu').toggle();
-          });
-    
-          // Clicking outside of any dropdown should close all dropdown menus
-          $('body').on('click', function(e) {
-            if (!$(e.target).closest('.navbar-nav').length) {
-              $('.dropdown-menu').hide();
-            }
-          });
         });
-    
-        // Improved handling for nested dropdowns
-        $(document).off('click', '.dropdown-menu a.dropdown-toggle').on('click', '.dropdown-menu a.dropdown-toggle', function (e) {
-          let $el = $(this);
-          let $parent = $el.offsetParent(".dropdown-menu");
-          let $open = $('.show', $parent);
-    
-          if (!$parent.parent().hasClass('navbar-nav')) {
+
+        // Clicking outside of any dropdown should close all dropdown menus
+        $('body').on('click', function(e) {
+            if (!$(e.target).closest('.navbar-nav').length) {
+                $('.dropdown-menu').hide();
+            }
+        });
+    });
+
+    // Improved handling for nested dropdowns
+    $(document).off('click', '.dropdown-menu a.dropdown-toggle').on('click', '.dropdown-menu a.dropdown-toggle', function(e) {
+        let $el = $(this);
+        let $parent = $el.offsetParent(".dropdown-menu");
+        let $open = $('.show', $parent);
+
+        if (!$parent.parent().hasClass('navbar-nav')) {
             if ($parent.hasClass('show')) {
-              $open.removeClass('show');
-              $el.next().removeClass('show');
-              $el.next().css({"top": -999, "left": -999});
+                $open.removeClass('show');
+                $el.next().removeClass('show');
+                $el.next().css({
+                    "top": -999,
+                    "left": -999
+                });
             } else {
-              $open.removeClass('show');
-              $el.next().toggleClass('show');
-              $el.parent().parent().find('.dropdown-submenu .show').removeClass('show');
-              $el.next().css({"top": $el[0].offsetTop, "left": $parent.outerWidth() - 4});
+                $open.removeClass('show');
+                $el.next().toggleClass('show');
+                $el.parent().parent().find('.dropdown-submenu .show').removeClass('show');
+                $el.next().css({
+                    "top": $el[0].offsetTop,
+                    "left": $parent.outerWidth() - 4
+                });
             }
             e.preventDefault();
             e.stopPropagation();
-          }
-        });
-    
-        // Special handling to hide the submenus when clicking on another submenu
-        $('.navbar .dropdown').on('hidden.bs.dropdown', function () {
-          $('.dropdown-submenu .show').removeClass('show');
-        });
-      });
-    </script>
-  </body>
+        }
+    });
+
+    // Special handling to hide the submenus when clicking on another submenu
+    $('.navbar .dropdown').on('hidden.bs.dropdown', function() {
+        $('.dropdown-submenu .show').removeClass('show');
+    });
+
+    // Prevent default behavior for dropdown toggle link
+    $('.navbar-nav .dropdown-toggle').on('click', function(e) {
+        e.preventDefault();
+        $(this).next('.dropdown-menu').toggleClass('show');
+    });
+});
+</script>
+</body>
 </html>

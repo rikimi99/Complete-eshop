@@ -120,6 +120,7 @@ class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
 def product_list(request):
     sort_by = request.GET.get('sort', 'name')
     products = Product.objects.all()
+    
     if sort_by == 'price':
         products = products.order_by('price')
     else:
@@ -130,7 +131,7 @@ def product_list(request):
     return render(request, 'shop/product_list.html', {
         'products': products,
         'categories': categories,
-        'stars_range': range(1, 6)  # Add this line
+        'sort_by': sort_by,  # Pass the selected sorting option to the template
     })
 
 
@@ -150,7 +151,6 @@ class ProductListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)  # Ensure compatibility with Python 2 and 3
         context['categories'] = Category.objects.prefetch_related('subcategories').all()
-        context['stars_range'] = range(1, 6)  # Add this line to include stars_range in the context
         return context
 
 
@@ -230,7 +230,9 @@ def add_to_cart(request, product_id):
         cart[product_id_str] = {'quantity': 1}
         
     request.session['cart'] = cart
-    referer_url = request.META.get('HTTP_REFERER', reverse('home'))
+    referer_url = request.META.get('HTTP_REFERER')
+    if referer_url is None:
+        referer_url = reverse('home')
     return HttpResponseRedirect(referer_url)
 
 
@@ -327,28 +329,6 @@ def get_similar_products(product_id):
     return similar_products
 
 
-# View for submitting a rating for a product
-def rate_product(request, product_id):
-    if request.method == 'POST':
-        stars = request.POST.get('stars', 0)
-        try:
-            stars = int(stars)
-        except ValueError:
-            return JsonResponse({'error': 'Invalid rating value'}, status=400)
-
-        if stars < 1 or stars > 5:
-            return JsonResponse({'error': 'Rating must be between 1 and 5'}, status=400)
-
-        product = get_object_or_404(Product, id=product_id)
-        rating, created = Rating.objects.update_or_create(
-            product=product,
-            user=request.user,
-            defaults={'stars': stars}
-        )
-
-        return JsonResponse({'success': 'Rating updated', 'rating': stars, 'created': created})
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # View for the contact us page
 def contact(request):

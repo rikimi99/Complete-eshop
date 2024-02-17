@@ -261,6 +261,31 @@ footer.footer {
   margin-right: 5px; /* Space between icon and text */
 }
 
+/* Style for Products Dropdown */
+.dropdown-menu {
+  border: 1px solid #e5e5e5;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+  background-color: #fff;
+  border-radius: 0.25rem;
+}
+
+.dropdown-item {
+  color: #333;
+  padding: 0.5rem 1.5rem;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-divider {
+  border-top: 1px solid #e5e5e5;
+  margin: 0.5rem 0;
+}
+
 .dropdown-submenu {
   position: relative;
 }
@@ -269,4 +294,12 @@ footer.footer {
   top: 0;
   left: 100%;
   margin-top: -1px;
+  margin-left: 0.1rem;
+  min-width: 200px;
+  border-radius: 0;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-submenu:hover .dropdown-menu {
+  display: block;
 }

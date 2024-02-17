@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 from django.utils.translation import gettext_lazy as _
+import random
+import string
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -37,11 +41,14 @@ class Subcategory(models.Model):
     category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
 
+def generate_product_id():
+    return ''.join(random.choices(string.digits, k=6))
+
 class Product(models.Model):
+    id = models.CharField(primary_key=True, max_length=6, default=generate_product_id)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, related_name='products', null=True, blank=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=100)
-    name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField()
@@ -53,11 +60,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
-    def average_rating(self):
-        ratings = self.ratings.all()
-        if ratings:
-            return sum(rating.stars for rating in ratings) / ratings.count()
-        return 0
 
 
 class Order(models.Model):
@@ -68,15 +70,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Order by {self.name}'
-
-class Rating(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    stars = models.IntegerField()
-
-    class Meta:
-        unique_together = (('user', 'product'),)
-        index_together = (('user', 'product'),)
 
 class WishlistItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
