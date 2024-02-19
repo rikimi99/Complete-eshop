@@ -1,6 +1,5 @@
 from django.urls import path, re_path, include
 from . import views
-from shop.views import ResetPasswordView
 from django.contrib.auth import views as auth_views
 
 # Define URL patterns for the shop application
@@ -82,12 +81,7 @@ urlpatterns = [
     # Product autocomplete API - Provides product suggestions as the user types
     path('product-autocomplete/', views.product_autocomplete, name='product-autocomplete'),
 
-    # Wishlist view - Displays the user's wishlist
-    path('wishlist/', views.wishlist_view, name='wishlist'),
-
-    # Wishlist count - Returns the number of items in the user's wishlist
-    path('wishlist-count/', views.wishlist_count_view, name='wishlist_count'),
-
     # Products API - Returns a list of products in JSON format
     path('api/products/', views.get_products_json, name='api_products'),
+
 ]

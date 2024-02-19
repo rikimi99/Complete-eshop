@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<style>
-  .star.filled {
-    color: gold;
-  }
-</style>
 <!-- Main container for the products section -->
 <div class="container py-5">
   <h2>Our Products</h2>
@@ -19,14 +14,8 @@
   </form>
   <!-- Container for dynamically loaded products -->
   <div class="row" id="productList">
-    <!-- Server-side rendered products for initial display, if any -->
     {% for product in products %}
-    <div
-      class="col-md-4 mb-4 product-item"
-      data-id="{{ product.id }}"
-      data-name="{{ product.name }}"
-      data-price="{{ product.price }}"
-    >
+    <div class="col-md-4 mb-4">
       <div class="card h-100 position-relative">
         {% if product.image %}
         <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" />
@@ -35,10 +24,10 @@
           <p>ID: {{ product.id }}</p>
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text">{{ product.description }}</p>
-          <div class="mt-auto">
+          <div class="mt-auto d-flex justify-content-between align-items-center">
             <span class="price">${{ product.price }}</span>
             <!-- Add to Cart form -->
-            <form action="{% url 'add_to_cart' product.id %}" method="post">
+            <form action="{% url 'add_to_cart' product.id %}" method="post" class="me-2">
               {% csrf_token %}
               <input type="hidden" name="product_id" value="{{ product.id }}" />
               <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
@@ -50,43 +39,18 @@
     {% endfor %}
   </div>
 </div>
-<script src="{% static 'js/csrf.js' %}"></script> <!-- Assuming you have a CSRF handling JS -->
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Function to submit the form when sort option changes
+
     document.getElementById("sort").addEventListener("change", function() {
       document.getElementById("sortForm").submit(); // Submit the form
     });
-    
-    // Fetch and display products initially
+
+
     fetchAndDisplayProducts();
-    
-    // Event listeners for rating stars
-    const stars = document.querySelectorAll('.star');
-    stars.forEach(star => {
-      star.addEventListener('click', function() {
-        const rating = this.getAttribute('data-value');
-        const productId = this.closest('.rating').getAttribute('data-product-id')
-        fetch(`/rate_product/${productId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-          },
-          body: JSON.stringify({ stars: rating })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if(data.success) {
-            console.log('Rating success:', data);
-            updateStarDisplay(this.closest('.rating'), rating);
-          } else {
-            console.error('Rating error:', data.error);
-          }
-        })
-        .catch(error => console.error('Error:', error));
-      });
-    });
   });
+
+
 </script>
 {% endblock %}

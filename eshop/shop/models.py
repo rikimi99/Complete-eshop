@@ -4,8 +4,7 @@ from PIL import Image
 from django.utils.translation import gettext_lazy as _
 import random
 import string
-
-
+from django.conf import settings
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -70,8 +69,3 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Order by {self.name}'
-
-class WishlistItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    added_date = models.DateTimeField(auto_now_add=True)

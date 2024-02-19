@@ -12,6 +12,7 @@ from .models import *
 from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
 
+
 # View for the home page
 def home(request):
     return render(request, 'shop/home.html')
@@ -330,29 +331,6 @@ def get_similar_products(product_id):
     similar_products = Product.objects.filter(category=category).exclude(id=product_id)[:5]
     return similar_products
 
-
-
 # View for the contact us page
 def contact(request):
     return render(request, 'shop/contactus.html')
-
-
-# View for the wishlist page
-def wishlist_view(request):
-    if request.user.is_authenticated:
-        # Fetch wishlist items for the logged-in user
-        wishlist_items = WishlistItem.objects.filter(user=request.user).select_related('product')
-        context = {'wishlist_items': wishlist_items}
-    else:
-        # If the user is not authenticated, redirect to login or show an empty page
-        context = {'wishlist_items': []}  # Adjust as necessary
-    return render(request, 'shop/wishlist.html', context)
-
-
-# View for getting the count of items in the wishlist
-def wishlist_count_view(request):
-    if request.user.is_authenticated:
-        count = WishlistItem.objects.filter(user=request.user).count()
-    else:
-        count = 0
-    return JsonResponse({'wishlist_count': count})
