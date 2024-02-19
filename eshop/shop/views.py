@@ -9,6 +9,7 @@ from django.views.generic import ListView
 from django.db.models.functions import Lower
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, CheckoutForm
 from .models import *
+from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
 
 # View for the home page
@@ -308,6 +309,7 @@ def complete_order(request):
 def search_results(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(name__icontains=query)
+    products = Product.objects.filter(Q(name__icontains=query) | Q(id=query))
     return render(request, 'shop/search_results.html', {'products': products})
 
 
