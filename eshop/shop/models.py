@@ -60,7 +60,6 @@ class Product(models.Model):
         return self.name
     
 
-
 class Order(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -69,3 +68,4 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Order by {self.name}'
+    

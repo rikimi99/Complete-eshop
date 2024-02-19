@@ -11,6 +11,9 @@ from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, C
 from .models import *
 from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Avg
+from django.db.models.functions import Coalesce
+
 
 
 # View for the home page
