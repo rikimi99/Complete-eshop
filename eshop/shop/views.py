@@ -11,9 +11,6 @@ from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, C
 from .models import *
 from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Avg
-from django.db.models.functions import Coalesce
-
 
 
 # View for the home page
@@ -312,8 +309,10 @@ def complete_order(request):
 # View for searching products
 def search_results(request):
     query = request.GET.get('query', '')
-    products = Product.objects.filter(name__icontains=query)
-    products = Product.objects.filter(Q(name__icontains=query) | Q(id=query))
+    if query.strip():  # Ensure query is not empty or only whitespace
+        products = Product.objects.filter(Q(name__icontains=query) | Q(id=query))
+    else:
+        products = Product.objects.none()  # Return an empty queryset if query is invalid
     return render(request, 'shop/search_results.html', {'products': products})
 
 
