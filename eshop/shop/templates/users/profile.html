@@ -42,8 +42,8 @@
         </div>
         <div class="form-group">
           <!-- Link to change the password -->
-          <a href="#">Change Password</a>
-          <hr />
+          <a href="{% url 'password_reset' %}">Change Password</a>
+          <hr/>
           <!-- Avatar change field -->
           <label class="small mb-1">Change Avatar:</label>
           {{ profile_form.avatar }}
