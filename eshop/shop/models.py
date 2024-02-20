@@ -6,7 +6,11 @@ import random
 import string
 from django.conf import settings
 
+
 class Profile(models.Model):
+    """
+    Model representing user profiles.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField()
@@ -14,7 +18,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-    # resizing images
+    # Resizing images
     def save(self, *args, **kwargs):
         super().save()
 
@@ -27,23 +31,39 @@ class Profile(models.Model):
 
 
 class Category(models.Model):
+    """
+    Model representing product categories.
+    """
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
+
 def default_image_filename():
     return 'default.jpg'
 
+
 class Subcategory(models.Model):
+    """
+    Model representing product subcategories.
+    """
     category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 
 def generate_product_id():
     return ''.join(random.choices(string.digits, k=6))
 
+
 class Product(models.Model):
+    """
+    Model representing products.
+    """
     id = models.CharField(primary_key=True, max_length=6, default=generate_product_id)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, related_name='products', null=True, blank=True, on_delete=models.SET_NULL)
@@ -58,9 +78,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Order(models.Model):
+    """
+    Model representing orders.
+    """
     name = models.CharField(max_length=100)
     email = models.EmailField()
     address = models.CharField(max_length=255)

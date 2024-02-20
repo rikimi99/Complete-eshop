@@ -6,6 +6,9 @@ from .models import Profile
 
 
 class RegisterForm(UserCreationForm):
+    """
+    Form for user registration.
+    """
     first_name = forms.CharField(max_length=100,
                                  required=True,
                                  widget=forms.TextInput(attrs={'placeholder': 'First Name',
@@ -46,6 +49,9 @@ class RegisterForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
+    """
+    Form for user login.
+    """
     username = forms.CharField(max_length=100,
                                required=True,
                                widget=forms.TextInput(attrs={'placeholder': 'Username',
@@ -67,22 +73,29 @@ class LoginForm(AuthenticationForm):
 
 
 class CustomLoginView(LoginView):
+    """
+    Customized LoginView with remember me functionality.
+    """
     form_class = LoginForm
 
     def form_valid(self, form):
         remember_me = form.cleaned_data.get('remember_me')
 
         if not remember_me:
-            # set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
+            # Set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
             self.request.session.set_expiry(0)
 
             # Set session as modified to force data updates/cookie to be saved.
             self.request.session.modified = True
 
-        # else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE" defined in settings.py
+        # Else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE" defined in settings.py
         return super(CustomLoginView, self).form_valid(form)
-    
+
+
 class UpdateUserForm(forms.ModelForm):
+    """
+    Form for updating user information.
+    """
     username = forms.CharField(max_length=100,
                                required=True,
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -95,6 +108,9 @@ class UpdateUserForm(forms.ModelForm):
 
 
 class UpdateProfileForm(forms.ModelForm):
+    """
+    Form for updating user profile information.
+    """
     avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
     bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
 
@@ -103,13 +119,10 @@ class UpdateProfileForm(forms.ModelForm):
         fields = ['avatar', 'bio']
 
 
-
-
-
-
-###################################################################################################################################
-        
 class CheckoutForm(forms.Form):
+    """
+    Form for checkout process.
+    """
     name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     address = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
@@ -117,4 +130,3 @@ class CheckoutForm(forms.Form):
     card_number = forms.CharField(max_length=16, widget=forms.TextInput(attrs={'class': 'form-control'}))
     card_expiry = forms.CharField(max_length=5, widget=forms.TextInput(attrs={'class': 'form-control'}))
     card_cvc = forms.CharField(max_length=3, widget=forms.TextInput(attrs={'class': 'form-control'}))
-

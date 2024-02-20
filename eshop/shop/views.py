@@ -15,12 +15,18 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 # View for the home page
 def home(request):
+    """
+    Renders the home page.
+    """
     return render(request, 'shop/home.html')
 
 
 # View for the user profile
 @login_required
 def profile(request):
+    """
+    Renders the user profile page and handles profile updates.
+    """
     # Create or get the user's profile
     Profile.objects.get_or_create(user=request.user)
     
@@ -45,6 +51,9 @@ def profile(request):
 
 # Class-based view for user registration
 class RegisterView(View):
+    """
+    Handles user registration.
+    """
     form_class = RegisterForm
     initial = {'key': 'value'}
     template_name = 'users/register.html'
@@ -77,6 +86,9 @@ class RegisterView(View):
 
 # Custom LoginView with remember me functionality
 class CustomLoginView(LoginView):
+    """
+    Customized LoginView with remember me functionality.
+    """
     form_class = LoginForm
 
     def form_valid(self, form):
@@ -94,6 +106,9 @@ class CustomLoginView(LoginView):
 
 # Custom LogoutView with success message and redirection
 class CustomLogoutView(LogoutView):
+    """
+    Customized LogoutView with success message and redirection.
+    """
     def get(self, request, *args, **kwargs):
         messages.success(request, "You have been logged out successfully.")
         
@@ -102,6 +117,9 @@ class CustomLogoutView(LogoutView):
         return self.post(request, *args, **kwargs)
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    """
+    Handles password reset functionality.
+    """
     template_name = 'users/password_reset.html'
     email_template_name = 'users/password_reset_email.html'
     subject_template_name = 'users/password_reset_subject.txt'  # Make sure this file extension is correct (it should be .txt, not mentioned in your snippet)
@@ -113,6 +131,9 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    """
+    Handles password change functionality.
+    """
     template_name = 'users/change_password.html'
     success_message = "Successfully Changed Your Password"
     success_url = reverse_lazy('home')
@@ -120,6 +141,9 @@ class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
 
 # View for listing products
 def product_list(request):
+    """
+    Renders the product list page and handles product sorting.
+    """
     sort_by = request.GET.get('sort', 'name')
     products = Product.objects.all()
     
@@ -139,6 +163,9 @@ def product_list(request):
 
 # Class-based view for listing products
 class ProductListView(ListView):
+    """
+    Renders the product list page using class-based views and handles product sorting.
+    """
     model = Product
     template_name = 'shop/product_list.html'
     context_object_name = 'products'
@@ -158,6 +185,9 @@ class ProductListView(ListView):
 
 # Class-based view for listing products by category
 class ProductsByCategoryView(ListView):
+    """
+    Renders the product list filtered by category using class-based views.
+    """
     model = Product
     template_name = 'shop/product_list.html'
     context_object_name = 'products'
@@ -174,6 +204,9 @@ class ProductsByCategoryView(ListView):
 
 # Class-based view for listing products by subcategory
 class ProductsBySubcategoryView(ListView):
+    """
+    Renders the product list filtered by subcategory using class-based views.
+    """
     model = Product
     template_name = 'shop/product-list.html'
     context_object_name = 'products'
@@ -190,6 +223,9 @@ class ProductsBySubcategoryView(ListView):
 
 # View for getting products in JSON format
 def get_products_json(request):
+    """
+    Returns a JSON response containing product information.
+    """
     products = Product.objects.all().values('id', 'name', 'price', 'description', 'image')
     products_list = list(products)
     return JsonResponse(products_list, safe=False)
@@ -197,6 +233,9 @@ def get_products_json(request):
 
 # View for managing shopping cart
 def cart(request):
+    """
+    Renders the shopping cart page and handles cart management.
+    """
     cart = request.session.get('cart', {})
     cart_items = []
     total_price = 0
@@ -220,6 +259,9 @@ def cart(request):
 
 # View for adding a product to the cart
 def add_to_cart(request, product_id):
+    """
+    Adds a product to the shopping cart.
+    """
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
 
@@ -240,6 +282,9 @@ def add_to_cart(request, product_id):
 
 # View for removing a product from the cart
 def remove_from_cart(request, product_id):
+    """
+    Removes a product from the shopping cart.
+    """
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
     if product_id_str in cart:
@@ -253,6 +298,9 @@ def remove_from_cart(request, product_id):
 
 # View for getting the count of items in the cart
 def cart_count(request):
+    """
+    Returns the count of items in the shopping cart.
+    """
     cart = request.session.get('cart', {})
     cart_count = sum(cart.get(key, {}).get('quantity', 0) for key in cart.keys())
     return JsonResponse({'cart_count': cart_count})
@@ -260,12 +308,18 @@ def cart_count(request):
 
 # View for clearing the cart
 def clear_cart(request):
+    """
+    Clears all items from the shopping cart.
+    """
     request.session['cart'] = {}
     return redirect('cart')
 
 
 # View for the checkout process
 def checkout(request):
+    """
+    Handles the checkout process.
+    """
     shipping_cost = 20
     cart = request.session.get('cart', {})
     cart_items = []
@@ -295,11 +349,17 @@ def checkout(request):
 
 # View for showing order success page
 def order_success(request):
+    """
+    Renders the order success page.
+    """
     return render(request, 'shop/order_success.html')
 
 
 # View for completing the order
 def complete_order(request):
+    """
+    Clears the shopping cart after order completion.
+    """
     if request.session.get('cart'):
         del request.session['cart']
 
@@ -308,6 +368,9 @@ def complete_order(request):
 
 # View for searching products
 def search_results(request):
+    """
+    Renders the search results page based on user query.
+    """
     query = request.GET.get('query', '')
     if query.strip():  # Ensure query is not empty or only whitespace
         products = Product.objects.filter(Q(name__icontains=query) | Q(id=query))
@@ -318,6 +381,9 @@ def search_results(request):
 
 # View for product autocomplete API
 def product_autocomplete(request):
+    """
+    Provides autocomplete suggestions for product search.
+    """
     if 'term' in request.GET:
         term = request.GET['term']
         products = Product.objects.filter(name__istartswith=term)[:10]
@@ -328,6 +394,9 @@ def product_autocomplete(request):
 
 # View for getting similar products
 def get_similar_products(product_id):
+    """
+    Retrieves similar products based on a given product ID.
+    """
     product = get_object_or_404(Product, id=product_id)
     category = product.category
     similar_products = Product.objects.filter(category=category).exclude(id=product_id)[:5]
@@ -335,4 +404,7 @@ def get_similar_products(product_id):
 
 # View for the contact us page
 def contact(request):
+    """
+    Renders the contact us page.
+    """
     return render(request, 'shop/contactus.html')
